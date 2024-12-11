@@ -10,3 +10,4 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/workers', [WorkerController::class, 'index']);
 Route::get('/workers/{id}', [WorkerController::class, 'show']);
+Route::get('/workers', [WorkerController::class, 'store']);

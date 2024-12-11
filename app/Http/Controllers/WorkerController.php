@@ -20,7 +20,8 @@ class WorkerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Worker::create($request->all());
+        return response()->json(['message' => 'worker not found'], 201);
     }
 
     /**
