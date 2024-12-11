@@ -12,7 +12,7 @@ class WorkerController extends Controller
      */
     public function index()
     {
-        //
+        return Worker::all();
     }
 
     /**
@@ -26,9 +26,13 @@ class WorkerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Worker $worker)
+    public function show($id)
     {
-        //
+        $worker = Worker::find($id);
+        if(!$worker) {
+            return response()->json(['message' => 'worker not found'], 404);
+        }
+        return $worker;
     }
 
     /**
