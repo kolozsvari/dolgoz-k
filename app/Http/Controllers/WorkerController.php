@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Worker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class WorkerController extends Controller
 {
@@ -20,8 +21,19 @@ class WorkerController extends Controller
      */
     public function store(Request $request)
     {
-        Worker::create($request->all());
-        return response()->json(['message' => 'worker not found'], 201);
+        $validator = Validator::make($request->all(),[
+            'name' => 'required',
+            'city' => 'required',
+            'email' => 'required|email|unique:workers',
+            'picture' => 'string'
+        ]);
+        
+        if ($validator->fails()){
+            return response()->json($validator->errors(),422);
+        }
+     
+        $worker = Worker::create($request->all());
+        return response()->json($worker, 201);
     }
 
     /**
@@ -39,16 +51,32 @@ class WorkerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Worker $worker)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(),[
+           
+            'email' => 'email|unique:workers'
+            
+        ]);
+
+        $worker = Worker::find($id);
+        if (!$worker){
+            return response()->json(['message' => 'worker not found'], 404);
+        }
+        $worker->update($request->all());
+        return response()->json($worker, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Worker $worker)
+    public function destroy($id)
     {
-        //
+        $worker = Worker::find($id);
+        if (!$worker){
+            return response()->json(['message' => 'worker not found'], 404);
+        }
+        $worker->delete();
+        return response()->json(['message' => 'worker deleted successfully'], 200);
     }
 }
